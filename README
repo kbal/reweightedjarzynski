@@ -11,4 +11,5 @@ as follows:
    bias potential, as a reweighted histogram
 
 A matching nn.py script is provided for each system, and depends on scikit-learn 
-and numpy. For the HBr system we also have inputs for the HLDA analysis.
+and numpy. For the HBr system we also have inputs for the HLDA analysis, for 
+you'll need G. Piccini's scripts from https://github.com/piccig/HLDA
