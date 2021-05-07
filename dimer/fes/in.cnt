@@ -1,0 +1,48 @@
+units           lj
+
+boundary        p p p
+
+atom_style      atomic
+atom_modify     map array
+atom_modify     sort 0 0.0
+lattice         sc 0.84
+
+region          total block -5 5 -5 5 -5 5
+create_box      2 total
+create_atoms    2 single 0.5 0.5 -2.0 units box
+create_atoms    2 single 0.5 0.5 2.0 units box
+create_atoms    1 region total
+
+pair_style      hybrid lj/cut 2.5 morse 5.0
+pair_coeff      1 1*2 lj/cut 1.0 1.0
+pair_coeff      2 2   morse 10.0 5.0 1.0
+pair_modify     shift yes
+
+mass            1 1.0
+mass            2 1.0
+
+neighbor        1.0 bin
+neigh_modify    every 1 delay 5 check yes
+timestep        0.002
+
+variable        t equal 1.5
+variable        damp equal 1.0
+
+thermo          10000
+thermo_style    custom step temp pe ke time etotal atoms
+
+displace_atoms  all random 0.1 0.1 0.1 374641
+minimize        0 0 1000 10000
+reset_timestep  0
+
+fix             1 all nve
+fix             2 all temp/csld $t $t ${damp} 685541
+
+velocity        all create $t 4928459 mom yes dist gaussian
+
+run             10000
+
+reset_timestep  0
+
+fix             3 all plumed plumedfile plumed.inp outfile plumed.out
+run             5000000
